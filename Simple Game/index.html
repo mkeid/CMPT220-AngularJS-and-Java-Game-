@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html ng-app>
+	<head>
+		<meta charset="utf-8" />
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.min.js"></script>
+		<script src="classes.js"></script>
+		<script src="simple.js"></script>
+		<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="simple.css">
+		<title>Simple Game</title>
+	</head>
+	<body ng-init="init()" style="text-align:center;" ng-controller="Simple">
+		<div id="topBar">
+			<h2>{{name}}<span ng-show="name">'s</span> Adventure Game</h2> [ <span>Score: {{score}}</span> ]
+		</div>
+		
+		<div class="row">
+		<div class="col-md-6">
+		<div id="sectionButtons">
+			<h3>Controller</h3>
+			<span>Current Location: {{visitedLocations[visitedLocations.length-1].name}}</span>
+			<br>
+			<button type="button" ng-show="showN" class="btn btn-success directionButton" value="North" ng-click="updateLocation('North')">North</button>
+			<button type="button" ng-hide="showN" class="btn btn-success directionButton" disabled="disabled">North</button>
+			
+			<button type="button" ng-show="showS" class="btn btn-danger directionButton" value="South" ng-click="updateLocation('South')">South</button>
+			<button type="button" ng-hide="showS" class="btn btn-danger directionButton" disabled="disabled">South</button>
+			
+			<button type="button" ng-show="showE" class="btn btn-primary directionButton" value="East" ng-click="updateLocation('East')">East</button>
+			<button type="button" ng-hide="showE" class="btn btn-primary directionButton" disabled="disabled">East</button>
+			
+			<button type="button" ng-show="showW" class="btn btn-warning directionButton" value="West" ng-click="updateLocation('West')">West</button>		
+			<button type="button" ng-hide="showW" class="btn btn-warning directionButton" disabled="disabled">West</button>
+		</div>
+		<div id="sectionInput">
+			<input id="inputField" type="text" ng-model="inputField" ng-keypress="goEnter($event, inputField)" placeholder='Type ( n | s | e | w | i | h ) to change direction / open your inventory / get help.' maxlength="1">
+			<button type="button" id="goButton" class="btn btn-default" ng-click="go(inputField)">GO</button>
+		</div>
+		
+		<div id="sectionInventory" ng-show="showI">
+			<h3>Inventory</h3>
+			<ul class="unstyled">
+        		<li ng-repeat="item in inventory track by $index">
+         			<span>{{item.toString()}}</span>
+        		</li>
+     		</ul>
+		</div>
+		
+		<div id="sectionInventory" ng-show="showH">
+			<h3>Help</h3>
+			<p>{{name}}<span ng-show="name">'s </span>Adventure Game is a simple game built with html, javascript, and css.<p>
+			<p ng-show="name">It is based on the true life of {{name}} where he walks around campus all day collecting random items.</p>
+			<p>To move around, press the directional buttons or enter one of the following directional key inputs: ( n | s | e | w )</p>
+			<p>To open your inventory, enter 'i' in the text field above.</p>
+		</div>
+		
+		<div id="sectionMap">
+			<h3>Map</h3>
+			<div class="row">
+				<div class="col-md-4">
+					- wasteland - 
+				</div>
+				
+				<div class="col-md-4" ng-hide="selectedRow == 0 && selectedCol == 1">
+					{{map[0][1].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 0 && selectedCol == 1">
+					{{map[0][1].name}}
+				</div>
+				
+				<div class="col-md-4" ng-hide="selectedRow == 0 && selectedCol == 2">
+					{{map[0][2].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 0 && selectedCol == 2">
+					{{map[0][2].name}}
+				</div>
+				
+			</div>
+			
+			<div class="row">
+				<div class="col-md-4">
+					- wasteland - 
+				</div>
+				
+				<div class="col-md-4" ng-hide="selectedRow == 1 && selectedCol == 1">
+					{{map[1][1].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 1 && selectedCol == 1">
+					{{map[1][1].name}}
+				</div>
+				
+				<div class="col-md-4">
+					- wasteland - 
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-4" ng-hide="selectedRow == 2 && selectedCol == 0">
+					{{map[2][0].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 2 && selectedCol == 0">
+					{{map[2][0].name}}
+				</div>
+				
+				<div class="col-md-4" ng-hide="selectedRow == 2 && selectedCol == 1">
+					{{map[2][1].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 2 && selectedCol == 1">
+					{{map[2][1].name}}
+				</div>
+				
+				<div class="col-md-4" ng-hide="selectedRow == 2 && selectedCol == 2">
+					{{map[2][2].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 2 && selectedCol == 2">
+					{{map[2][2].name}}
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-4" ng-hide="selectedRow == 3 && selectedCol == 0">
+					{{map[3][0].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 3 && selectedCol == 0">
+					{{map[3][0].name}}
+				</div>
+				
+				<div class="col-md-4" ng-hide="selectedRow == 3 && selectedCol == 1">
+					{{map[3][1].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 3 && selectedCol == 1">
+					{{map[3][1].name}}
+				</div>
+				
+				<div class="col-md-4" ng-hide="selectedRow == 3 && selectedCol == 2">
+					{{map[3][2].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 3 && selectedCol == 2">
+					{{map[3][2].name}}
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-4">
+					- wasteland - 
+				</div>
+				
+				<div class="col-md-4" ng-hide="selectedRow == 4 && selectedCol == 1">
+					{{map[4][1].name}}
+				</div>
+				<div class="col-md-4 currentLocation" ng-show="selectedRow == 4 && selectedCol == 1">
+					{{map[4][1].name}}
+				</div>
+				
+				<div class="col-md-4">
+					- wasteland - 
+				</div>
+			</div>
+			
+		</div>
+		
+		<div id="sectionPreferences">
+			<h4>Preferences</h4>
+			Name: <input type="text" ng-model="name" placeholder="Enter your name here.">
+		</div>
+		</div>
+		
+			<div class="col-md-3 travelLog">
+				<h3>Travel Log</h3>
+				<ul class="unstyled">
+        			<li ng-repeat="location in visitedLocations track by $index">
+         		   	 <span>{{location.toString()}}</span>
+        			</li>
+     			</ul>
+     	 	</div>
+     	 	
+     	 	<div class="col-md-3 travelLog">
+				<h3>Error Log</h3>
+				<ul class="unstyled">
+        			<li ng-repeat="error in errors track by $index">
+         		   	 <span>{{error.message}}</span>
+        			</li>
+     			</ul>
+     	 	</div>
+		</div>
+		
+		
+	</body>
+</html>
