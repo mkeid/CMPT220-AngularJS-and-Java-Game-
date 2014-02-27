@@ -1,0 +1,962 @@
+{
+    groups =     (
+                {
+            items =             (
+                                {
+                    reasons =                     {
+                        count = 1;
+                        items =                         (
+                                                        {
+                                count = 1;
+                                message = "James A. (16x) has been here";
+                                reasonName = friendAndSelfCheckinReason;
+                                summary = "James A. (16x) has been here";
+                                type = social;
+                            }
+                        );
+                    };
+                    referralId = "e-0-4b59ead8f964a520bba028e3-0";
+                    snippets =                     {
+                        count = 1;
+                        items =                         (
+                                                        {
+                                detail =                                 {
+                                    object =                                     {
+                                        canonicalUrl = "https://foursquare.com/item/4ea082fbd22d6eead83699f3";
+                                        createdAt = 1319142139;
+                                        entities =                                         (
+                                                                                        {
+                                                indices =                                                 (
+                                                    19,
+                                                    23
+                                                );
+                                                type = "search_match";
+                                            }
+                                        );
+                                        id = 4ea082fbd22d6eead83699f3;
+                                        likes =                                         {
+                                            count = 1;
+                                            groups =                                             (
+                                            );
+                                            summary = "1 like";
+                                        };
+                                        text = "If you will need a taxi, call ahead. There are no standing cabs. 20 minute wait. Yuck!";
+                                        todo =                                         {
+                                            count = 0;
+                                        };
+                                        user =                                         {
+                                            firstName = Aaron;
+                                            gender = male;
+                                            id = 4218964;
+                                            lastName = "A.";
+                                            photo =                                             {
+                                                prefix = "https://irs0.4sqi.net/img/user/";
+                                                suffix = "/02G0GIRRFEYMWYRI.jpg";
+                                            };
+                                        };
+                                    };
+                                    type = tip;
+                                };
+                                reason =                                 {
+                                    facePile =                                     {
+                                        count = 1;
+                                        items =                                         (
+                                                                                        {
+                                                disliked = 0;
+                                                liked = 0;
+                                                user =                                                 {
+                                                    firstName = James;
+                                                    gender = male;
+                                                    id = 17879983;
+                                                    lastName = Arama;
+                                                    photo =                                                     {
+                                                        prefix = "https://irs3.4sqi.net/img/user/";
+                                                        suffix = "/HKLHIQANU1FWSS0A.jpg";
+                                                    };
+                                                    relationship = friend;
+                                                };
+                                                visitedCount = 16;
+                                            }
+                                        );
+                                    };
+                                    text = "James A. (16x) has been here";
+                                };
+                            }
+                        );
+                    };
+                    tips =                     (
+                                                {
+                            canonicalUrl = "https://foursquare.com/item/4ea082fbd22d6eead83699f3";
+                            createdAt = 1319142139;
+                            entities =                             (
+                                                                {
+                                    indices =                                     (
+                                        19,
+                                        23
+                                    );
+                                    type = "search_match";
+                                }
+                            );
+                            id = 4ea082fbd22d6eead83699f3;
+                            likes =                             {
+                                count = 1;
+                                groups =                                 (
+                                );
+                                summary = "1 like";
+                            };
+                            text = "If you will need a taxi, call ahead. There are no standing cabs. 20 minute wait. Yuck!";
+                            todo =                             {
+                                count = 0;
+                            };
+                            user =                             {
+                                firstName = Aaron;
+                                gender = male;
+                                id = 4218964;
+                                lastName = "A.";
+                                photo =                                 {
+                                    prefix = "https://irs0.4sqi.net/img/user/";
+                                    suffix = "/02G0GIRRFEYMWYRI.jpg";
+                                };
+                            };
+                        }
+                    );
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/airport_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d1ed931735;
+                                name = Airport;
+                                pluralName = Airports;
+                                primary = 1;
+                                shortName = Airport;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 838-8200";
+                            phone = 8458388200;
+                            twitter = "ny_njairports";
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 4b59ead8f964a520bba028e3;
+                        like = 0;
+                        likes =                         {
+                            count = 18;
+                            groups =                             (
+                                                                {
+                                    count = 18;
+                                    items =                                     (
+                                    );
+                                    type = others;
+                                }
+                            );
+                            summary = "18 likes";
+                        };
+                        location =                         {
+                            address = "1180 First St";
+                            cc = US;
+                            city = "New Windsor";
+                            country = "United States";
+                            distance = 28825;
+                            lat = "41.49768179025889";
+                            lng = "-74.10140991210938";
+                            postalCode = 12553;
+                            state = NY;
+                        };
+                        name = "Stewart International Airport (SWF)";
+                        photos =                         {
+                            count = 112;
+                            groups =                             (
+                            );
+                        };
+                        rating = "6.7";
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 8209;
+                            tipCount = 54;
+                            usersCount = 3508;
+                        };
+                        storeId = "";
+                        url = "http://www.panynj.gov/airports/stewart.html";
+                        venuePage =                         {
+                            id = 34306190;
+                        };
+                        verified = 1;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-52a1d84c498ec58d4db46c11-1";
+                    tips =                     (
+                                                {
+                            canonicalUrl = "https://foursquare.com/item/52b976cc498e8e6075d01ccb";
+                            createdAt = 1387886284;
+                            id = 52b976cc498e8e6075d01ccb;
+                            text = "Ride with us for a safe and reliable ride";
+                            todo =                             {
+                                count = 0;
+                            };
+                            user =                             {
+                                firstName = Vinny;
+                                gender = male;
+                                id = 45643133;
+                                lastName = "B.";
+                                photo =                                 {
+                                    prefix = "https://irs3.4sqi.net/img/user/";
+                                    suffix = "/AEFOYPL0ZNXGSRR2.jpg";
+                                };
+                            };
+                        }
+                    );
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 255-6666";
+                            phone = 8452556666;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 52a1d84c498ec58d4db46c11;
+                        like = 0;
+                        likes =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        location =                         {
+                            cc = US;
+                            city = "New Paltz";
+                            country = "United States";
+                            distance = 13758;
+                            lat = "41.754111";
+                            lng = "-74.083713";
+                            postalCode = 12561;
+                            state = NY;
+                        };
+                        name = "call a cab";
+                        photos =                         {
+                            count = 1;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 74;
+                            tipCount = 1;
+                            usersCount = 3;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-52fbf87d498ee6061e9630c3-2";
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(914) 557-6001";
+                            phone = 9145576001;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 52fbf87d498ee6061e9630c3;
+                        like = 0;
+                        likes =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        location =                         {
+                            cc = US;
+                            country = "United States";
+                            distance = 693;
+                            lat = "41.71991";
+                            lng = "-73.93275";
+                            state = "New York";
+                        };
+                        name = Joe;
+                        photos =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 0;
+                            tipCount = 0;
+                            usersCount = 0;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-5113ea5be4b034556699d9fa-3";
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 838-1800";
+                            phone = 8458381800;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 5113ea5be4b034556699d9fa;
+                        like = 0;
+                        likes =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        location =                         {
+                            address = "7 West Main At";
+                            cc = US;
+                            city = Beacon;
+                            country = "United States";
+                            distance = 24213;
+                            lat = "41.507376";
+                            lng = "-73.984162";
+                            postalCode = 12508;
+                            state = NY;
+                        };
+                        name = "Call A Cab";
+                        photos =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 7;
+                            tipCount = 0;
+                            usersCount = 1;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-5016efdae4b0d93bf94b5ec5-4";
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 561-5000";
+                            phone = 8455615000;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 5016efdae4b0d93bf94b5ec5;
+                        like = 0;
+                        likes =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        location =                         {
+                            address = "196 Washington St.";
+                            cc = US;
+                            city = Newburgh;
+                            country = "United States";
+                            crossStreet = "William St.";
+                            distance = 25787;
+                            lat = "41.49903869628906";
+                            lng = "-74.01634216308594";
+                            postalCode = 12550;
+                            state = NY;
+                        };
+                        name = "Yellow cab";
+                        photos =                         {
+                            count = 1;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 2;
+                            tipCount = 0;
+                            usersCount = 2;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-505b48cfe0e2f2e8a3e763b7-5";
+                    tips =                     (
+                                                {
+                            canonicalUrl = "https://foursquare.com/item/505b4cc2e4b0ae54616f1c44";
+                            createdAt = 1348160706;
+                            editedAt = 1348160734;
+                            id = 505b4cc2e4b0ae54616f1c44;
+                            text = "Make reservations by calling 845-876-2010. We have been in business over 40 years. We are reliable and respectful.   e-mail: redhooktaxi@gmail.com";
+                            todo =                             {
+                                count = 0;
+                            };
+                            url = "http://www.redhookrhinebecktaxi.com";
+                            user =                             {
+                                firstName = "Red Hook";
+                                gender = male;
+                                id = 37685582;
+                                lastName = "T.";
+                                photo =                                 {
+                                    prefix = "https://irs1.4sqi.net/img/user/";
+                                    suffix = "/11RYH2I0JJ020ZNX.jpg";
+                                };
+                            };
+                        }
+                    );
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 876-2010";
+                            phone = 8458762010;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 505b48cfe0e2f2e8a3e763b7;
+                        like = 0;
+                        likes =                         {
+                            count = 1;
+                            groups =                             (
+                                                                {
+                                    count = 1;
+                                    items =                                     (
+                                                                                {
+                                            firstName = Lorie;
+                                            gender = female;
+                                            id = 48814966;
+                                            lastName = "S.";
+                                            photo =                                             {
+                                                prefix = "https://irs3.4sqi.net/img/user/";
+                                                suffix = "/L0ZMEXIQMVULJU0U.jpg";
+                                            };
+                                        }
+                                    );
+                                    type = others;
+                                }
+                            );
+                            summary = "Lorie S";
+                        };
+                        location =                         {
+                            address = "251 Round Lake Rd";
+                            cc = US;
+                            city = Rhinebeck;
+                            country = "United States";
+                            distance = 22430;
+                            lat = "41.92068053169717";
+                            lng = "-73.95238637924193";
+                            postalCode = 12572;
+                            state = NY;
+                        };
+                        name = "Red Hook - Rhinebeck Taxi Cab";
+                        photos =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 0;
+                            tipCount = 2;
+                            usersCount = 0;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-4fe02e56e4b09f023187e401-6";
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 471-1100";
+                            phone = 8454711100;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 4fe02e56e4b09f023187e401;
+                        like = 0;
+                        likes =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        location =                         {
+                            address = "506 Salt Point Tpke";
+                            cc = US;
+                            city = Poughkeepsie;
+                            country = "United States";
+                            crossStreet = "Edgewood Dr";
+                            distance = 3994;
+                            lat = "41.737322";
+                            lng = "-73.882124";
+                            postalCode = 12601;
+                            state = NY;
+                        };
+                        name = "Call A Cab";
+                        photos =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 65;
+                            tipCount = 0;
+                            usersCount = 5;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-5127a32a72da9fb565c757c2-7";
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 758-5050";
+                            phone = 8457585050;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 5127a32a72da9fb565c757c2;
+                        like = 0;
+                        likes =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        location =                         {
+                            address = "Mill St";
+                            cc = US;
+                            city = Rhinebeck;
+                            country = "United States";
+                            distance = 22507;
+                            lat = "41.92223719963062";
+                            lng = "-73.91187429428101";
+                            postalCode = 12572;
+                            state = NY;
+                        };
+                        name = "Northeast Transport Limousine Town Car Service";
+                        photos =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 0;
+                            tipCount = 0;
+                            usersCount = 0;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-5082e8f1582fc95a36b3736e-8";
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 876-1105";
+                            phone = 8458761105;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 5082e8f1582fc95a36b3736e;
+                        like = 0;
+                        likes =                         {
+                            count = 1;
+                            groups =                             (
+                                                                {
+                                    count = 1;
+                                    items =                                     (
+                                                                                {
+                                            firstName = Tony;
+                                            gender = male;
+                                            id = 39757823;
+                                            lastName = "R.";
+                                            photo =                                             {
+                                                prefix = "https://irs0.4sqi.net/img/user/";
+                                                suffix = "/IX2VTZSCMDP0VDK2.jpg";
+                                            };
+                                        }
+                                    );
+                                    type = others;
+                                }
+                            );
+                            summary = "Tony Raynor";
+                        };
+                        location =                         {
+                            address = "30 Lehmann Ln";
+                            cc = US;
+                            city = Rhinebeck;
+                            country = "United States";
+                            crossStreet = "salisbury turnpike";
+                            distance = 26911;
+                            lat = "41.950936945218";
+                            lng = "-73.82735252380371";
+                            postalCode = 12572;
+                            state = NY;
+                        };
+                        name = "Tonys Taxi Limo";
+                        photos =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 0;
+                            tipCount = 0;
+                            usersCount = 0;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-50bc8917e4b0118a6246900c-9";
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                            formattedPhone = "(845) 454-4444";
+                            phone = 8454544444;
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 50bc8917e4b0118a6246900c;
+                        like = 0;
+                        likes =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        location =                         {
+                            address = "1427 Route 44";
+                            cc = US;
+                            city = "Pleasant Valley";
+                            country = "United States";
+                            crossStreet = "Timothy Heights";
+                            distance = 7513;
+                            lat = "41.73605728149414";
+                            lng = "-73.83649444580078";
+                            postalCode = 12569;
+                            state = NY;
+                        };
+                        name = "empire transportation";
+                        photos =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 3;
+                            tipCount = 0;
+                            usersCount = 2;
+                        };
+                        verified = 0;
+                    };
+                },
+                                {
+                    reasons =                     {
+                        count = 0;
+                        items =                         (
+                        );
+                    };
+                    referralId = "e-0-50dbc3a9e4b0992ed429662b-10";
+                    venue =                     {
+                        categories =                         (
+                                                        {
+                                icon =                                 {
+                                    prefix = "https://ss1.4sqi.net/img/categories_v2/travel/taxi_";
+                                    suffix = ".png";
+                                };
+                                id = 4bf58dd8d48988d130951735;
+                                name = Taxi;
+                                pluralName = Taxis;
+                                primary = 1;
+                                shortName = Taxi;
+                            }
+                        );
+                        contact =                         {
+                        };
+                        hereNow =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        id = 50dbc3a9e4b0992ed429662b;
+                        like = 0;
+                        likes =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        location =                         {
+                            cc = US;
+                            city = Walden;
+                            country = "United States";
+                            distance = 28552;
+                            lat = "41.555554";
+                            lng = "-74.187516";
+                            postalCode = 12586;
+                            state = NY;
+                        };
+                        name = "B & D Taxi";
+                        photos =                         {
+                            count = 0;
+                            groups =                             (
+                            );
+                        };
+                        specials =                         {
+                            count = 0;
+                            items =                             (
+                            );
+                        };
+                        stats =                         {
+                            checkinsCount = 5;
+                            tipCount = 0;
+                            usersCount = 2;
+                        };
+                        verified = 0;
+                    };
+                }
+            );
+            name = recommended;
+            type = "Recommended Places";
+        }
+    );
+    headerFullLocation = Fairview;
+    headerLocation = Fairview;
+    headerLocationGranularity = city;
+    query = taxi;
+    suggestedBounds =     {
+        ne =         {
+            lat = "42.00826028800029";
+            lng = "-73.53928945516293";
+        };
+        sw =         {
+            lat = "41.43225971199971";
+            lng = "-74.30955054483707";
+        };
+    };
+    totalResults = 11;
+}
