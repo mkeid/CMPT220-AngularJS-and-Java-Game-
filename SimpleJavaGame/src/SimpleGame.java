@@ -4,12 +4,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,23 +17,29 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 public class SimpleGame {
+	public static String name;
+	
+	// UI stuff
+	private static JLabel currentLocationLabel;
 	private static JTextArea errorTextArea;
 	private static JFrame frame;
 	private static JPanel gridPanel;
-	public static String name;
+	private static JButton magicShopButton;
+	private static JLabel moveCountLabel;
+	private static JLabel moveRatioLabel;
+	private static JLabel scoreLabel;
+	private static JPanel topPanel;
 	private static JTextArea travelTextArea;
 	
-	// UI
-	private static JLabel currentLocationLabel;
-	private static JLabel scoreLabel;
-	
+	// Game stuff
 	private static Item[] inventory;
+	private static boolean isAtMagicShop;
 	private static Location[][] map;
+	private static int moveCount;
 	private static int score;
 	private static int selectedCol;
 	private static int selectedRow;
@@ -43,7 +47,6 @@ public class SimpleGame {
 	private static ErrorLogItem[] errorLog;
 
 	public static void main(String [] args) {
-		initWorld();
 		initWindow();
 	}
 	
@@ -64,20 +67,21 @@ public class SimpleGame {
 	    Item saber = new Item(3, "Light Saber", "A saber made of light and stuff.");
 	    
 	    // Initialize locations
-	    Location donnelly = new Location(0, "Donnelly", "This is where people science.", gold);
-	    Location dyson = new Location(1, "Dyson", "All business here.", null);
-	    Location fontaine = new Location(2, "Fontaine", "There is nothing to do here.", null);
-	    Location fontaineAnnex = new Location(3, "Fontaine Annex", "Tiniest building. Largest lot.", saber);
-	    Location hancock = new Location(4, "Hancock", "Computers and stuff.", null);
-	    Location library = new Location(5, "Library", "This is where people study.", null);
-	    Location lowellThomas = new Location(6, "Lowell Thomas", "People are communicating.", teleporter);
-	    Location mccann = new Location(7, "McCann Center", "YEA SPORTS", ball);
-	    Location mcdonalds = new Location(8, "McDonald's", "They serve food and stuff.", null);
-	    Location rotunda = new Location(9, "Rotunda", "There is nothing to do here.", null);
+	    Location donnelly = new AcademicLocation(0, "Donnelly", "This is where people science.", gold);
+	    Location dyson = new AcademicLocation(1, "Dyson", "All business here.", null);
+	    Location fontaine = new AcademicLocation(2, "Fontaine", "There is nothing to do here.", null);
+	    Location fontaineAnnex = new AcademicLocation(3, "Fontaine Annex", "Tiniest building. Largest lot.", saber);
+	    Location hancock = new AcademicLocation(4, "Hancock", "Computers and stuff.", null);
+	    Location library = new AcademicLocation(5, "Library", "This is where people study.", null);
+	    Location lowellThomas = new AcademicLocation(6, "Lowell Thomas", "People are communicating.", teleporter);
+	    Location mccann = new AcademicLocation(7, "McCann Center", "YEA SPORTS", ball);
+	    Location mcdonalds = new ServiceLocation(8, "McDonald's", "They serve food and stuff.", null);
+	    Location rotunda = new AcademicLocation(9, "Rotunda", "There is nothing to do here.", null);
+	    Location magicShop = new AcademicLocation(9, "Magick Shoppe", "You're at the magic shop.", null);
 	    
 	    // Assign locations to places on the map
 	    map = new Location[5][3];
-	    Location[] row1 = {null, fontaineAnnex, mcdonalds};
+	    Location[] row1 = {magicShop, fontaineAnnex, mcdonalds};
 	    Location[] row2 = {null, fontaine, null};
 	    Location[] row3 = {hancock, dyson, lowellThomas};
 	    Location[] row4 = {rotunda, library, donnelly};
@@ -108,6 +112,8 @@ public class SimpleGame {
         	resetGrid();
         	selectItemOnGrid();
         	currentLocationLabel.setText("Current Location: "+changedLocation.getName());
+        	
+        	updateMoveCount();
         	
         	TravelLogItem[] updatedTravelLog = new TravelLogItem[travelLog.length + 1];
         	for(int x = 0; x < travelLog.length; x++) {
@@ -171,6 +177,8 @@ public class SimpleGame {
 	}
 	
 	private static void showPlaySession() {
+		initWorld();
+		
 		frame.getContentPane().removeAll();
 		
 		BorderLayout layout = new BorderLayout();
@@ -179,13 +187,44 @@ public class SimpleGame {
 		/***********************
 		 * Top Section
 		 **********************/
-		JPanel topPanel = new JPanel();
+		topPanel = new JPanel();
 		topPanel.setBackground(new Color(71,71,71));
 		
-		scoreLabel = new JLabel("Score: 5", JLabel.CENTER);
+		JButton resetButton = new JButton("Reset Game");
+		resetButton.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) { showPlaySession(); }
+	    });
+		resetButton.setBackground(new Color(90,90,90));
+		resetButton.setBorderPainted(false);
+		resetButton.setFont(new Font(resetButton.getFont().getName(), Font.BOLD,15));
+		resetButton.setForeground(Color.WHITE);
+		resetButton.setOpaque(true);
+		topPanel.add(resetButton);
+		
+		scoreLabel = new JLabel(" Score: 5", JLabel.CENTER);
 		scoreLabel.setFont(new Font(scoreLabel.getFont().getName(), Font.BOLD, 20));
 		scoreLabel.setForeground(Color.WHITE);
 		topPanel.add(scoreLabel);
+		
+		JLabel topBreakLabel = new JLabel(" | ", JLabel.CENTER);
+		topBreakLabel.setFont(new Font(scoreLabel.getFont().getName(), Font.BOLD, 24));
+		topBreakLabel.setForeground(new Color(110,110,110));
+		topPanel.add(topBreakLabel);
+		
+		moveCountLabel = new JLabel("Move Count: 0", JLabel.CENTER);
+		moveCountLabel.setFont(new Font(scoreLabel.getFont().getName(), Font.BOLD, 20));
+		moveCountLabel.setForeground(Color.WHITE);
+		topPanel.add(moveCountLabel);
+		
+		JLabel topBreakLabel2 = new JLabel(" | ", JLabel.CENTER);
+		topBreakLabel2.setFont(new Font(scoreLabel.getFont().getName(), Font.BOLD, 24));
+		topBreakLabel2.setForeground(new Color(110,110,110));
+		topPanel.add(topBreakLabel2);
+		
+		moveRatioLabel = new JLabel("Achievement Ratio: 0.00", JLabel.CENTER);
+		moveRatioLabel.setFont(new Font(scoreLabel.getFont().getName(), Font.BOLD, 20));
+		moveRatioLabel.setForeground(Color.WHITE);
+		topPanel.add(moveRatioLabel);
 		
 		frame.add(topPanel, BorderLayout.PAGE_START);
 		
@@ -199,57 +238,78 @@ public class SimpleGame {
 		// Controller label
 		JLabel controllerLabel = new JLabel("Controller");
 		controllerLabel.setForeground(Color.WHITE);
-		controllerLabel.setFont(new Font(scoreLabel.getFont().getName(), Font.BOLD, 20));
+		controllerLabel.setFont(new Font(scoreLabel.getFont().getName(), Font.BOLD, 16));
 		bottomPanel.add(controllerLabel);
 		
-		// Directional buttons
+		// North button
 		JButton nButton = new JButton("North");
 		nButton.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) { updateDirection("North"); }
 	    });
+		nButton.setBackground(new Color(92,184,92));
+		nButton.setBorderPainted(false);
+		nButton.setFont(new Font(nButton.getFont().getName(), Font.BOLD,15));
+		nButton.setForeground(Color.WHITE);
+		nButton.setOpaque(true);
 		bottomPanel.add(nButton);
 		
+		// South button
 		JButton sButton = new JButton("South");
 		sButton.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) { updateDirection("South"); }
 	    });
+		sButton.setBackground(new Color(217,83,79));
+		sButton.setBorderPainted(false);
+		sButton.setFont(new Font(sButton.getFont().getName(), Font.BOLD,15));
+		sButton.setForeground(Color.WHITE);
+		sButton.setOpaque(true);
 		bottomPanel.add(sButton);
 		
+		// East button
 		JButton eButton = new JButton("East");
 		eButton.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) { updateDirection("East"); }
 	    });
+		eButton.setBackground(new Color(66,139,202));
+		eButton.setBorderPainted(false);
+		eButton.setFont(new Font(eButton.getFont().getName(), Font.BOLD,15));
+		eButton.setForeground(Color.WHITE);
+		eButton.setOpaque(true);
 		bottomPanel.add(eButton);
 		
+		// West button
 		JButton wButton = new JButton("West");
 		wButton.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) { updateDirection("West"); }
 	    });
+		wButton.setBackground(new Color(240,173,78));
+		wButton.setBorderPainted(false);
+		wButton.setFont(new Font(wButton.getFont().getName(), Font.BOLD,15));
+		wButton.setForeground(Color.WHITE);
+		wButton.setOpaque(true);
 		bottomPanel.add(wButton);
 		
 		// Info on directional input
 		JLabel infoInputLabel = new JLabel("Enter n|s|e|w to move. Enter 'i' for inventory. Enter 'h' for help. ");
 		infoInputLabel.setForeground(Color.WHITE);
+		infoInputLabel.setFont(new Font(infoInputLabel.getFont().getName(), Font.BOLD,12));
 		bottomPanel.add(infoInputLabel);
 		
 		// Directional input
-		final JTextField textField = new JTextField("",5);
+		final JTextField textField = new JTextField("",2);
+		textField.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		       triedChangingDirection(textField);
+		    }
+		});
 		bottomPanel.add(textField);
 		
 		// Go button
 		JButton goButton = new JButton("GO");
 		goButton.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) { 
-	        	 char input = textField.getText().toLowerCase().charAt(0);
-	        	 if(input == 'n') updateDirection("North");
-	        	 else if(input == 's') updateDirection("South");
-	        	 else if(input == 'e') updateDirection("East");   
-	        	 else if(input == 'w') updateDirection("West");
-	        	 else if(input == 'i') displayInventory();
-	        	 else if(input == 'h') displayHelp();
-	        	 else {
-	        		 
-	        	 }
+	        	 triedChangingDirection(textField);
 	         }
 	    });
 		bottomPanel.add(goButton);
@@ -293,7 +353,7 @@ public class SimpleGame {
 				}
 				else locationLabel = new JLabel("", JLabel.CENTER);
 				
-				Border border = BorderFactory.createLineBorder(new Color(220,220,220), 2);
+				Border border = BorderFactory.createLineBorder(new Color(180,180,180), 1);
 
 				locationLabel.setBackground(Color.WHITE);	
 				locationLabel.setBorder(border);
@@ -389,14 +449,16 @@ public class SimpleGame {
 	    
 	    // Name Panel
 	    final JTextField nameTextField = new JTextField("", 30);
+	    nameTextField.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		    	triedSubmittingName(nameTextField);
+		    }
+		});
 	    JButton goButton = new JButton("PLAY");
 	    goButton.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
-	             if(nameTextField.getText().length() > 0) {
-	            	 String updatedName = nameTextField.getText();
-		        	 updatedName = Character.toUpperCase(updatedName.charAt(0)) + updatedName.substring(1);
-	            	 declareName(updatedName, true);
-	             }
+	             triedSubmittingName(nameTextField);
 	         }
 	    });
 	    
@@ -409,7 +471,14 @@ public class SimpleGame {
 	    frame.validate();
 	}
 	
-	public static void declareName(String updatedName, boolean isInitialDeclaration) {
+	private static void addToInventory(Item item) {
+		Item[] updatedInventory = new Item[inventory.length+1];
+		for(int x = 0; x < inventory.length; x++) if(inventory[x] != null) updatedInventory[x] = inventory[x];
+		updatedInventory[inventory.length] = item;
+		inventory = updatedInventory;
+	}
+	
+	private static void declareName(String updatedName, boolean isInitialDeclaration) {
 		name = updatedName;	
 		frame.setTitle(name+"'s Adventure Game");
 		if(isInitialDeclaration) showPlaySession();
@@ -419,7 +488,8 @@ public class SimpleGame {
 		String message = name+" Adventure Game is a simple game built with Java.\n";
 		message += "It is based on the true life of "+name+" where he walks around campus all day collecting random items.\n";
 		message += "To move around, press the directional buttons or enter one of the following directional key inputs: ( n | s | e | w )\n";
-		message += "To open your inventory, enter 'i' in the text field above.";
+		message += "To open your inventory, enter 'i'.";
+		message += "To quit, close the window or enter 'q'.";
 		
 		JOptionPane.showMessageDialog(frame, message, "Help", JOptionPane.INFORMATION_MESSAGE, null);
 	}
@@ -462,6 +532,49 @@ public class SimpleGame {
 		Border border = BorderFactory.createLineBorder(Color.WHITE);
 		locationLabel.setBorder(border);
 		locationLabel.setForeground(Color.WHITE);
+		
+		Location location = map[selectedRow][selectedCol];
+		if(location.getName().equalsIgnoreCase("Magick Shoppe")) {
+			isAtMagicShop = true;
+			magicShopButton = new JButton("Enter Magick Shoppe");
+			magicShopButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					enterMagicShop();
+				}
+		    });
+			magicShopButton.setBackground(new Color(103,78,178));
+			magicShopButton.setBorderPainted(false);
+			magicShopButton.setFont(new Font(magicShopButton.getFont().getName(), Font.BOLD,15));
+			magicShopButton.setForeground(Color.WHITE);
+			magicShopButton.setOpaque(true);
+			topPanel.add(magicShopButton);
+		}
+		else if(isAtMagicShop) {
+			// remove magic shop button here
+			topPanel.remove(magicShopButton);
+			isAtMagicShop = false;
+			frame.validate();
+			frame.repaint();
+		}
+	}
+	
+	private static void enterMagicShop() {
+		String[] choices = { 
+				"Bracers of Intelligence", 
+				"Teleport Ribbon", "Pearl of power", 
+				"Gauntlets of ogre power", 
+				"Stone of controlling earth elementals", 
+				"Circlet of Demonic Protection",
+				"Tome of leadership and influence"
+				};
+	    String itemName = (String) JOptionPane.showInputDialog(null, "What would you like to buy?", "The Magick Shoppe", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+	    if(itemName.equals(choices[0])) addToInventory(new Item(4, choices[0], ""));
+	    else if(itemName.equals(choices[1])) addToInventory(new Item(5, choices[1], ""));
+		else if(itemName.equals(choices[2])) addToInventory(new Item(6, choices[2], ""));    	
+		else if(itemName.equals(choices[3])) addToInventory(new Item(7, choices[3], ""));
+		else if(itemName.equals(choices[4])) addToInventory(new Item(8, choices[4], ""));
+		else if(itemName.equals(choices[5])) addToInventory(new Item(9, choices[5], ""));
 	}
 	
 	private static void updateErrorLog() {
@@ -483,19 +596,57 @@ public class SimpleGame {
 	}
 	
 	private static void updateScore() {
-		scoreLabel.setText("Score: "+score);
+		scoreLabel.setText(" Score: "+score);
+	}
+	
+	private static void warnAboutInvalidInput() {	
+		pushToErrorLog(new ErrorLogItem("> Invalid input.\n"));
 	}
 	
 	private static void warnAboutInvalidMove() {	
+		pushToErrorLog(new ErrorLogItem("> Invalid move.\n"));
+	}
+	
+	private static void pushToErrorLog(ErrorLogItem logItem) {
 		ErrorLogItem[] updatedErrorLog = new ErrorLogItem[errorLog.length+1];
 		for(int x = 0; x < errorLog.length; x++) {
 			updatedErrorLog[x] = errorLog[x];
 		}
-		
-		ErrorLogItem error = new ErrorLogItem("> Invalid move.\n");
-		updatedErrorLog[updatedErrorLog.length-1] = error;
-		
+		updatedErrorLog[updatedErrorLog.length-1] = logItem;
 		errorLog = updatedErrorLog;
 		updateErrorLog();
+	}
+	
+	private static void triedChangingDirection(JTextField textField) {
+		 char input = textField.getText().toLowerCase().charAt(0);
+	   	 if(input == 'n') updateDirection("North");
+	   	 else if(input == 's') updateDirection("South");
+	   	 else if(input == 'e') updateDirection("East");   
+	   	 else if(input == 'w') updateDirection("West");
+	   	 else if(input == 'i') displayInventory();
+	   	 else if(input == 'h') displayHelp();
+	   	 else if(input == 'q') frame.dispose();
+	   	 else warnAboutInvalidInput();
+	   	 textField.setText("");
+	}
+	
+	private static void triedSubmittingName(JTextField nameTextField) {
+		if(nameTextField.getText().length() > 0) {
+	       	 String updatedName = nameTextField.getText();
+	       	 updatedName = Character.toUpperCase(updatedName.charAt(0)) + updatedName.substring(1);
+	       	 declareName(updatedName, true);
+        }
+	}
+	
+	private static void updateAchievementRatio() {
+		float ratio = (float) score / moveCount;
+		String ratioString = String.format("%.2f", ratio);
+		moveRatioLabel.setText("Achievement Ratio: "+ratioString+" ");
+	}
+	
+	private static void updateMoveCount() {
+		moveCount++;
+		moveCountLabel.setText("Move Count: "+moveCount);
+		updateAchievementRatio();
 	}
 }

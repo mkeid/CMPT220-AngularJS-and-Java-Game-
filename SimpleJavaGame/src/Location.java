@@ -26,5 +26,7 @@ public class Location {
 	public void incrementVisitCount() { this.visitCount++; }
 	
 	// Display methods
-	public String toString() { return this.name + " | " + this.description; }
-}
+	public String toString() { 
+		if(this.visitCount == 1 && this.item != null) return this.name + " | you picked up '"+this.item.getName()+"'";
+		return this.name + " | " + this.description; }
+	}

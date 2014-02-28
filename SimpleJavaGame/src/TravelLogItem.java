@@ -1,6 +1,7 @@
 
 public class TravelLogItem extends LogItem {
 	private Location location;
+	private String log;
 	
 	// Constructor
 	public TravelLogItem(Location location) {
@@ -13,6 +14,7 @@ public class TravelLogItem extends LogItem {
 	}
 	
 	public String toString() {
-		return "> "+this.location.toString();
+		if(log == null) log = "> "+this.location.toString();
+		return log;
 	}
 }
