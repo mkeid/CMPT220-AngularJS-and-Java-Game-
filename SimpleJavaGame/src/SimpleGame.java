@@ -325,7 +325,7 @@ public class SimpleGame {
 		mapPanel.setLayout(mapBoxLayout);
 		mapPanel.setPreferredSize(new Dimension(470, 800));
 		
-		JLabel mapLabel = new JLabel("Map", JLabel.CENTER);
+		JLabel mapLabel = new JLabel("Map");
 		mapLabel.setFont(new Font(mapLabel.getFont().getName(), Font.BOLD, 20));
 		mapPanel.add(mapLabel);
 		
@@ -511,7 +511,7 @@ public class SimpleGame {
 	}
 	
 	private static void resetGrid() {
-		Border border = BorderFactory.createLineBorder(new Color(220,220,220), 2);
+		Border border = BorderFactory.createLineBorder(new Color(180,180,180), 1);
 		for(int x = 0; x < map.length; x++) {
 			for(int y = 0; y < map[x].length; y++) {
 				if(map[x][y] != null) {
