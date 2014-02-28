@@ -60,7 +60,10 @@ public class SimpleGame {
 	}
 	
 	private static void initWorld() {
-		// Initialize items
+	    score = 0;
+	    moveCount = 0;
+		
+	    // Initialize items
 	    Item teleporter = new Item(0, "Teleporter", "This teleports you to Lowell Thomas.");
 	    Item ball = new Item(1, "Ball", "It does nothing.");
 	    Item gold = new Item(2, "Gold", "This was stolen from a chemist in Donnelly.");
