@@ -6,6 +6,11 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -35,6 +40,11 @@ public class SimpleGame {
 	private static JLabel scoreLabel;
 	private static JPanel topPanel;
 	private static JTextArea travelTextArea;
+	
+	// Shop stuff
+	private static ArrayList<Item> shopItems;
+	private static ArrayList<Integer> shopItemCosts;
+	private static ArrayList<String> shopItemNames;
 	
 	// Directional buttons
 	/*
@@ -79,6 +89,11 @@ public class SimpleGame {
 		score = 0;
 		moveCount = 0;
 		
+		// Initialize Shop Stuff
+		shopItems = new ArrayList<Item>();
+		shopItemCosts = new ArrayList<Integer>();
+		shopItemNames = new ArrayList<String>();
+		
 		// Initialize items
 	    score = 0;
 	    moveCount = 0;
@@ -102,6 +117,30 @@ public class SimpleGame {
 	    AcademicLocation rotunda = new AcademicLocation(9, "Rotunda", "There is nothing to do here.", null);
 	    AcademicLocation magicShop = new AcademicLocation(9, "Magick Shoppe", "You're at the magic shop.", null);
 	    
+	    try {
+			initShop();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        // Assign surrounding locations
+        magicShop.setNearbyLocations(null, fontaineAnnex, null, null);
+        fontaineAnnex.setNearbyLocations(null, mcdonalds, fontaine, magicShop);
+        mcdonalds.setNearbyLocations(null, null, null, fontaineAnnex);
+
+        fontaine.setNearbyLocations(fontaineAnnex, null, dyson, null);
+
+        hancock.setNearbyLocations(null, dyson, rotunda, null);
+        dyson.setNearbyLocations(fontaine, lowellThomas, library, hancock);
+        lowellThomas.setNearbyLocations(null, null, donnelly, dyson);
+
+        rotunda.setNearbyLocations(hancock, library, null, null);
+        library.setNearbyLocations(dyson, donnelly, mccann, rotunda);
+        donnelly.setNearbyLocations(lowellThomas, null, null, library);
+
+        mccann.setNearbyLocations(library, null, null, null);
+
 	    // Assign locations to places on the map
 	    map = new Location[5][3];
 	    Location[] row1 = {magicShop, fontaineAnnex, mcdonalds};
@@ -125,6 +164,21 @@ public class SimpleGame {
 	    selectedCol = 0;
 	    travelLog = new TravelLogItem[] {new TravelLogItem(hancock)};
 	    errorLog = new ErrorLogItem[0];
+	}
+	
+	private static void initShop() throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File("src/magicitems.txt"));
+        while (scanner.hasNextLine()){
+            Item item = new Item(0, scanner.nextLine(), "");
+            Random generator = new Random();
+            int i = 10 - generator.nextInt(10);
+            item.setCost(i);
+
+            shopItems.add(item);
+            shopItemCosts.add(item.getCost());
+            shopItemNames.add(item.getName() + ": "+ item.getCost()+"pts");
+        }
+        scanner.close();
 	}
 	
 	public static void updateDirection(String direction) {
@@ -152,32 +206,60 @@ public class SimpleGame {
 		Location changedLocation = currentLocation;
         
 		if(direction.equals("North")) {
+			/*
 			if(selectedRow != 0 && map[selectedRow - 1][selectedCol] != null) {
 				changedLocation = map[selectedRow - 1][selectedCol];
 				selectedRow--;
 			}
 			else warnAboutInvalidMove();
+            */
+            if(currentLocation.getNorthLocation() != null) {
+                changedLocation = currentLocation.getNorthLocation();
+                selectedRow--;
+            }
+            else warnAboutInvalidMove();
 		} 
 		else if(direction.equals("South")) {
+            /*
 			if(selectedRow != 4 && map[selectedRow + 1][selectedCol] != null) {
 				changedLocation = map[selectedRow + 1][selectedCol];
 				selectedRow++;
 			}
 			else warnAboutInvalidMove();
+			*/
+            if(currentLocation.getSouthLocation() != null) {
+                changedLocation = currentLocation.getSouthLocation();
+                selectedRow++;
+            }
+            else warnAboutInvalidMove();
 		}
 		else if(direction.equals("East")) {
+            /*
 			if(selectedCol != 2 && map[selectedRow][selectedCol + 1] != null) {
 				changedLocation = map[selectedRow][selectedCol + 1];
 				selectedCol++;
 			}
 			else warnAboutInvalidMove();
+			*/
+            if(currentLocation.getEastLocation() != null) {
+                changedLocation = currentLocation.getEastLocation();
+                selectedCol++;
+            }
+            else warnAboutInvalidMove();
 		}
 		else if(direction.equals("West")) {
+            /*
 			if(selectedCol != 0 && map[selectedRow][selectedCol - 1] != null) {
 				changedLocation = map[selectedRow][selectedCol - 1];
 				selectedCol--;
 			}
 			else warnAboutInvalidMove();
+			*/
+            if(currentLocation.getWestLocation() != null) {
+                changedLocation = currentLocation.getWestLocation();
+                selectedCol--;
+            }
+            else warnAboutInvalidMove();
 		}
 		
 		if(!changedLocation.getName().equals(currentLocation.getName())) {
@@ -517,7 +599,12 @@ public class SimpleGame {
 			magicShopButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					enterMagicShop();
+					try {
+						enterMagicShop();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 		    });
 			magicShopButton.setBackground(new Color(103,78,178));
@@ -536,22 +623,39 @@ public class SimpleGame {
 		}
 	}
 	
-	private static void enterMagicShop() {
-		String[] choices = { 
-				"Bracers of Intelligence", 
-				"Teleport Ribbon", "Pearl of power", 
-				"Gauntlets of ogre power", 
-				"Stone of controlling earth elementals", 
-				"Circlet of Demonic Protection",
-				"Tome of leadership and influence"
-				};
-	    String itemName = (String) JOptionPane.showInputDialog(null, "What would you like to buy?", "The Magick Shoppe", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
-	    if(itemName.equals(choices[0])) addToInventory(new Item(4, choices[0], ""));
-	    else if(itemName.equals(choices[1])) addToInventory(new Item(5, choices[1], ""));
-		else if(itemName.equals(choices[2])) addToInventory(new Item(6, choices[2], ""));    	
-		else if(itemName.equals(choices[3])) addToInventory(new Item(7, choices[3], ""));
-		else if(itemName.equals(choices[4])) addToInventory(new Item(8, choices[4], ""));
-		else if(itemName.equals(choices[5])) addToInventory(new Item(9, choices[5], ""));
+	private static void enterMagicShop() throws FileNotFoundException {
+		Item[] tempItems = shopItems.toArray(new Item[shopItems.size()]);
+		int shopItemNamesSize = shopItemNames.size();
+		String[] emptyStringArray = new String[shopItemNamesSize];
+        String[] shopItemNamesArray = shopItemNames.toArray(emptyStringArray);
+        String itemName = (String) JOptionPane.showInputDialog(null, 
+        		"What would you like to buy?", 
+        		"The Magick Shoppe", 
+        		JOptionPane.QUESTION_MESSAGE, 
+        		null, 
+        		shopItemNamesArray, 
+        		shopItemNames.get(0));
+        int counter = 0;
+        boolean isFound = false;
+        while(counter < shopItems.size() && !isFound) {
+            Item item = shopItems.get(counter);
+            String itemNameWithCost = item.getName()+": "+item.getCost()+"pts";
+            if(itemName.equals(itemNameWithCost)) {
+                 if(score >= item.getCost()) {
+                     addToInventory(item);
+                     System.out.println("The cost was "+item.getCost()+" points.");
+                     score -= item.getCost();
+                     //JOptionPane.showMessageDialog(null, "The cost was "+item.getCost()+" points.");
+                 }
+                 else {
+                     System.out.println("You don't have enough points to buy this item");
+                     JOptionPane.showMessageDialog(null, "You don't have enough points to buy this item");
+                 }
+                 updateScore();
+                 isFound = true;
+            }
+            counter++;
+        }
 	}
 	
 	private static void updateErrorLog() {

@@ -6,6 +6,12 @@ public class Location {
 	private Item item;
 	private String name;
 	private int visitCount;
+
+    // Linked Stuff
+    private Location northLocation;
+    private Location eastLocation;
+    private Location southLocation;
+    private Location westLocation;
 	
 	// Constructor
 	public Location(int id, String name, String description, Item item) {
@@ -21,8 +27,21 @@ public class Location {
 	public Item getItem() { return this.item; }
 	public String getName() { return this.name; }
 	public int getVisitCount() { return this.visitCount; }
+
+    public Location getNorthLocation() { return this.northLocation; }
+    public Location getEastLocation() { return this.eastLocation; }
+    public Location getSouthLocation() { return this.southLocation; }
+    public Location getWestLocation() { return this.westLocation; }
+
+    // Setters
+    public void setNearbyLocations(Location northLocation, Location eastLocation, Location southLocation, Location westLocation) {
+        this.northLocation = northLocation;
+        this.eastLocation = eastLocation;
+        this.southLocation = southLocation;
+        this.westLocation = westLocation;
+    }
 	
-	// Setters
+	// Other
 	public void incrementVisitCount() { this.visitCount++; }
 	
 	// Display methods
