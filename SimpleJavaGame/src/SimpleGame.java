@@ -9,8 +9,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -37,6 +39,7 @@ public class SimpleGame {
 	private static JButton magicShopButton;
 	private static JLabel moveCountLabel;
 	private static JLabel moveRatioLabel;
+    private static JButton puzzleGameButton;
 	private static JLabel scoreLabel;
 	private static JPanel topPanel;
 	private static JTextArea travelTextArea;
@@ -45,6 +48,7 @@ public class SimpleGame {
 	private static ArrayList<Item> shopItems;
 	private static ArrayList<Integer> shopItemCosts;
 	private static ArrayList<String> shopItemNames;
+    private static String[] shopItemNamesArray;
 	
 	// Directional buttons
 	/*
@@ -64,6 +68,9 @@ public class SimpleGame {
 	// Game stuff
 	private static Item[] inventory;
 	private static boolean isAtMagicShop;
+    private static boolean isAtPuzzleGame;
+    private static SimpleQueue logQueue;
+    private static SimpleStack logStack;
 	private static Location[][] map;
 	private static int moveCount;
 	private static int score;
@@ -115,7 +122,8 @@ public class SimpleGame {
 	    AcademicLocation mccann = new AcademicLocation(7, "McCann Center", "YEA SPORTS", ball);
 	    ServiceLocation mcdonalds = new ServiceLocation(8, "McDonald's", "They serve food and stuff.", null);
 	    AcademicLocation rotunda = new AcademicLocation(9, "Rotunda", "There is nothing to do here.", null);
-	    AcademicLocation magicShop = new AcademicLocation(9, "Magick Shoppe", "You're at the magic shop.", null);
+	    AcademicLocation magicShop = new AcademicLocation(10, "Magick Shoppe", "You're at the magic shop.", null);
+        AcademicLocation puzzleGame = new AcademicLocation(11, "Puzzle Game", "A game within a game.", null);
 	    
 	    try {
 			initShop();
@@ -137,9 +145,10 @@ public class SimpleGame {
 
         rotunda.setNearbyLocations(hancock, library, null, null);
         library.setNearbyLocations(dyson, donnelly, mccann, rotunda);
-        donnelly.setNearbyLocations(lowellThomas, null, null, library);
+        donnelly.setNearbyLocations(lowellThomas, puzzleGame, null, library);
 
-        mccann.setNearbyLocations(library, null, null, null);
+        mccann.setNearbyLocations(library, puzzleGame, null, null);
+        puzzleGame.setNearbyLocations(donnelly, null, null, mccann);
 
 	    // Assign locations to places on the map
 	    map = new Location[5][3];
@@ -147,7 +156,7 @@ public class SimpleGame {
 	    Location[] row2 = {null, fontaine, null};
 	    Location[] row3 = {hancock, dyson, lowellThomas};
 	    Location[] row4 = {rotunda, library, donnelly};
-	    Location[] row5 = {null, mccann, null};
+	    Location[] row5 = {null, mccann, puzzleGame};
 	    
 	    map[0] = row1;
 	    map[1] = row2;
@@ -162,14 +171,31 @@ public class SimpleGame {
 	    score = 5;
 	    selectedRow = 2;
 	    selectedCol = 0;
-	    travelLog = new TravelLogItem[] {new TravelLogItem(hancock)};
+
+        TravelLogItem travelLogItem = new TravelLogItem(hancock);
+	    travelLog = new TravelLogItem[] {travelLogItem};
 	    errorLog = new ErrorLogItem[0];
+
+        logQueue = new SimpleQueue(travelLogItem);
+        logStack = new SimpleStack(travelLogItem);
 	}
 	
 	private static void initShop() throws FileNotFoundException {
+        shopItemNamesArray = new String[0];
+
         Scanner scanner = new Scanner(new File("src/magicitems.txt"));
-        while (scanner.hasNextLine()){
-            Item item = new Item(0, scanner.nextLine(), "");
+        while (scanner.hasNextLine() ){
+            String[] updatedShopItemNamesArray = new String[shopItemNamesArray.length + 1];
+            for (int x = 0; x < shopItemNamesArray.length; x++ ) updatedShopItemNamesArray[x] = shopItemNamesArray[x];
+            updatedShopItemNamesArray[shopItemNamesArray.length] = scanner.nextLine().toLowerCase();
+            shopItemNamesArray = updatedShopItemNamesArray;
+        }
+        scanner.close();
+
+        Arrays.sort(shopItemNamesArray);
+
+        for ( int x = 0; x < shopItemNamesArray.length; x++ ) {
+            Item item = new Item(0, shopItemNamesArray[x], "");
             Random generator = new Random();
             int i = 10 - generator.nextInt(10);
             item.setCost(i);
@@ -178,14 +204,13 @@ public class SimpleGame {
             shopItemCosts.add(item.getCost());
             shopItemNames.add(item.getName() + ": "+ item.getCost()+"pts");
         }
-        scanner.close();
 	}
 	
 	public static void updateDirection(String direction) {
 		TravelLogItem travelLogItem = travelLog[travelLog.length-1];
 		Location currentLocation = travelLogItem.getLocation();
         Location changedLocation = moveLocation(currentLocation, direction);
-        if(!currentLocation.getName().equals(changedLocation.getName())) {
+        if ( !currentLocation.getName().equals(changedLocation.getName())) {
         	resetGrid();
         	selectItemOnGrid();
         	currentLocationLabel.setText("Current Location: "+changedLocation.getName());
@@ -193,82 +218,81 @@ public class SimpleGame {
         	updateMoveCount();
         	
         	TravelLogItem[] updatedTravelLog = new TravelLogItem[travelLog.length + 1];
-        	for(int x = 0; x < travelLog.length; x++) {
-        		updatedTravelLog[x] = travelLog[x];
-        	}
-        	updatedTravelLog[travelLog.length] = new TravelLogItem(changedLocation);
+
+        	for ( int x = 0; x < travelLog.length; x++) updatedTravelLog[x] = travelLog[x];
+
+            TravelLogItem updatedTravelLogItem = new TravelLogItem(changedLocation);
+        	updatedTravelLog[travelLog.length] = updatedTravelLogItem;
         	travelLog = updatedTravelLog;
         	updateTravelLog();
+
+            logQueue.enqueue(updatedTravelLogItem);
+            logStack.push(updatedTravelLogItem);
         }
 	}
 	
 	public static Location moveLocation(Location currentLocation, String direction) {
 		Location changedLocation = currentLocation;
         
-		if(direction.equals("North")) {
+		if ( direction.equals("North")) {
 			/*
-			if(selectedRow != 0 && map[selectedRow - 1][selectedCol] != null) {
+			if ( selectedRow != 0 && map[selectedRow - 1][selectedCol] != null) {
 				changedLocation = map[selectedRow - 1][selectedCol];
 				selectedRow--;
 			}
 			else warnAboutInvalidMove();
             */
-            if(currentLocation.getNorthLocation() != null) {
+            if ( currentLocation.getNorthLocation() != null) {
                 changedLocation = currentLocation.getNorthLocation();
                 selectedRow--;
-            }
-            else warnAboutInvalidMove();
-		} 
-		else if(direction.equals("South")) {
+            } else warnAboutInvalidMove();
+		} else if ( direction.equals("South")) {
             /*
-			if(selectedRow != 4 && map[selectedRow + 1][selectedCol] != null) {
+			if ( selectedRow != 4 && map[selectedRow + 1][selectedCol] != null) {
 				changedLocation = map[selectedRow + 1][selectedCol];
 				selectedRow++;
 			}
 			else warnAboutInvalidMove();
 			*/
-            if(currentLocation.getSouthLocation() != null) {
+            if ( currentLocation.getSouthLocation() != null) {
                 changedLocation = currentLocation.getSouthLocation();
                 selectedRow++;
             }
             else warnAboutInvalidMove();
-		}
-		else if(direction.equals("East")) {
+		} else if ( direction.equals("East")) {
             /*
-			if(selectedCol != 2 && map[selectedRow][selectedCol + 1] != null) {
+			if ( selectedCol != 2 && map[selectedRow][selectedCol + 1] != null) {
 				changedLocation = map[selectedRow][selectedCol + 1];
 				selectedCol++;
 			}
 			else warnAboutInvalidMove();
 			*/
-            if(currentLocation.getEastLocation() != null) {
+            if ( currentLocation.getEastLocation() != null) {
                 changedLocation = currentLocation.getEastLocation();
                 selectedCol++;
-            }
-            else warnAboutInvalidMove();
+            } else warnAboutInvalidMove();
 		}
-		else if(direction.equals("West")) {
+		else if ( direction.equals("West")) {
             /*
-			if(selectedCol != 0 && map[selectedRow][selectedCol - 1] != null) {
+			if ( selectedCol != 0 && map[selectedRow][selectedCol - 1] != null) {
 				changedLocation = map[selectedRow][selectedCol - 1];
 				selectedCol--;
 			}
 			else warnAboutInvalidMove();
 			*/
-            if(currentLocation.getWestLocation() != null) {
+            if ( currentLocation.getWestLocation() != null) {
                 changedLocation = currentLocation.getWestLocation();
                 selectedCol--;
-            }
-            else warnAboutInvalidMove();
+            } else warnAboutInvalidMove();
 		}
 		
-		if(!changedLocation.getName().equals(currentLocation.getName())) {
-			if(changedLocation.getVisitCount() == 0) {
+		if ( !changedLocation.getName().equals(currentLocation.getName())) {
+			if ( changedLocation.getVisitCount() == 0) {
 				score += 5;
 				updateScore();
-				if(changedLocation.getItem() != null) {
+				if ( changedLocation.getItem() != null) {
 					Item[] updatedInventory = new Item[inventory.length + 1];
-					for(int x = 0; x < inventory.length; x++) {
+					for ( int x = 0; x < inventory.length; x++) {
 						updatedInventory[x] = inventory[x];
 					}
 					updatedInventory[inventory.length] = changedLocation.getItem();
@@ -295,9 +319,9 @@ public class SimpleGame {
 		topPanel = new JPanel();
 		topPanel.setBackground(new Color(71,71,71));
 		
-		JButton resetButton = new JButton("Reset Game");
+		JButton resetButton = new JButton("Menu");
 		resetButton.addActionListener(new ActionListener() {
-	         public void actionPerformed(ActionEvent e) { showPlaySession(); }
+	         public void actionPerformed(ActionEvent e) { showMenu(); }
 	    });
 		resetButton.setBackground(new Color(90,90,90));
 		resetButton.setBorderPainted(false);
@@ -403,14 +427,13 @@ public class SimpleGame {
 		mapPanel.add(gridPanel);		
 		
 		// Create map UI
-		for(int x = 0; x < map.length; x++) {
-			for(int y = 0; y < map[x].length; y++) {
+		for ( int x = 0; x < map.length; x++) {
+			for ( int y = 0; y < map[x].length; y++) {
 				JLabel locationLabel;
-				if(map[x][y] != null) {
+				if ( map[x][y] != null) {
 					Location location = map[x][y];
 					locationLabel = new JLabel(location.getName(), JLabel.CENTER);
-				}
-				else locationLabel = new JLabel("", JLabel.CENTER);
+				} else locationLabel = new JLabel("", JLabel.CENTER);
 				
 				Border border = BorderFactory.createLineBorder(new Color(180,180,180), 1);
 
@@ -532,7 +555,7 @@ public class SimpleGame {
 	
 	private static void addToInventory(Item item) {
 		Item[] updatedInventory = new Item[inventory.length+1];
-		for(int x = 0; x < inventory.length; x++) if(inventory[x] != null) updatedInventory[x] = inventory[x];
+		for ( int x = 0; x < inventory.length; x++) if ( inventory[x] != null) updatedInventory[x] = inventory[x];
 		updatedInventory[inventory.length] = item;
 		inventory = updatedInventory;
 	}
@@ -540,7 +563,7 @@ public class SimpleGame {
 	private static void declareName(String updatedName, boolean isInitialDeclaration) {
 		name = updatedName;	
 		frame.setTitle(name+"'s Adventure Game");
-		if(isInitialDeclaration) showPlaySession();
+		if ( isInitialDeclaration) showPlaySession();
 	}
 	
 	private static void displayHelp() {
@@ -557,9 +580,9 @@ public class SimpleGame {
 		String message = "You do not have any items in your inventory.";
 		
 		int itemsCounted = 0;
-		for(int x = 0; x < inventory.length; x ++) {
-			if(inventory[x] != null) {
-				if(itemsCounted == 0) message = "";
+		for ( int x = 0; x < inventory.length; x ++ ) {
+			if ( inventory[x] != null ) {
+				if ( itemsCounted == 0 ) message = "";
 				Item item = inventory[x];
 				itemsCounted++;
 				message += itemsCounted+": "+item.getName()+"\n";
@@ -571,9 +594,9 @@ public class SimpleGame {
 	
 	private static void resetGrid() {
 		Border border = BorderFactory.createLineBorder(new Color(180,180,180), 1);
-		for(int x = 0; x < map.length; x++) {
-			for(int y = 0; y < map[x].length; y++) {
-				if(map[x][y] != null) {
+		for ( int x = 0; x < map.length; x++ ) {
+			for ( int y = 0; y < map[x].length; y++ ) {
+				if ( map[x][y] != null ) {
 					JLabel locationLabel = (JLabel) gridPanel.getComponent((x*3) + y);
 					locationLabel.setBackground(Color.WHITE);	
 					locationLabel.setBorder(border);
@@ -593,7 +616,7 @@ public class SimpleGame {
 		locationLabel.setForeground(Color.WHITE);
 		
 		Location location = map[selectedRow][selectedCol];
-		if(location.getName().equalsIgnoreCase("Magick Shoppe")) {
+		if ( location.getName().equalsIgnoreCase("Magick Shoppe") ) {
 			isAtMagicShop = true;
 			magicShopButton = new JButton("Enter Magick Shoppe");
 			magicShopButton.addActionListener(new ActionListener() {
@@ -607,60 +630,91 @@ public class SimpleGame {
 					}
 				}
 		    });
-			magicShopButton.setBackground(new Color(103,78,178));
+			magicShopButton.setBackground(new Color(103,78,178) );
 			magicShopButton.setBorderPainted(false);
 			magicShopButton.setFont(new Font(magicShopButton.getFont().getName(), Font.BOLD,15));
 			magicShopButton.setForeground(Color.WHITE);
 			magicShopButton.setOpaque(true);
 			topPanel.add(magicShopButton);
-		}
-		else if(isAtMagicShop) {
+		} else if ( isAtMagicShop ) {
 			// remove magic shop button here
 			topPanel.remove(magicShopButton);
 			isAtMagicShop = false;
 			frame.validate();
 			frame.repaint();
 		}
+
+        if ( location.getName().equalsIgnoreCase("Puzzle Game") ) {
+            isAtPuzzleGame = true;
+            puzzleGameButton = new JButton("Play Puzzle Game");
+            puzzleGameButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    playPuzzleGame();
+                }
+            });
+            puzzleGameButton.setBackground(new Color(103,78,178));
+            puzzleGameButton.setBorderPainted(false);
+            puzzleGameButton.setFont(new Font(puzzleGameButton.getFont().getName(), Font.BOLD, 15));
+            puzzleGameButton.setForeground(Color.WHITE);
+            puzzleGameButton.setOpaque(true);
+            topPanel.add(puzzleGameButton);
+        } else if ( isAtPuzzleGame ) {
+            // remove magic shop button here
+            topPanel.remove(puzzleGameButton);
+            isAtPuzzleGame = false;
+            frame.validate();
+            frame.repaint();
+        }
 	}
 	
 	private static void enterMagicShop() throws FileNotFoundException {
 		Item[] tempItems = shopItems.toArray(new Item[shopItems.size()]);
 		int shopItemNamesSize = shopItemNames.size();
 		String[] emptyStringArray = new String[shopItemNamesSize];
-        String[] shopItemNamesArray = shopItemNames.toArray(emptyStringArray);
-        String itemName = (String) JOptionPane.showInputDialog(null, 
+
+        /*
+        String itemName = (String) JOptionPane.showInputDialog(null,
         		"What would you like to buy?", 
         		"The Magick Shoppe", 
         		JOptionPane.QUESTION_MESSAGE, 
         		null, 
         		shopItemNamesArray, 
         		shopItemNames.get(0));
-        int counter = 0;
-        boolean isFound = false;
-        while(counter < shopItems.size() && !isFound) {
-            Item item = shopItems.get(counter);
-            String itemNameWithCost = item.getName()+": "+item.getCost()+"pts";
-            if(itemName.equals(itemNameWithCost)) {
-                 if(score >= item.getCost()) {
-                     addToInventory(item);
-                     System.out.println("The cost was "+item.getCost()+" points.");
-                     score -= item.getCost();
-                     //JOptionPane.showMessageDialog(null, "The cost was "+item.getCost()+" points.");
-                 }
-                 else {
-                     System.out.println("You don't have enough points to buy this item");
-                     JOptionPane.showMessageDialog(null, "You don't have enough points to buy this item");
-                 }
-                 updateScore();
-                 isFound = true;
+        		*/
+        String itemName = (String) JOptionPane.showInputDialog(null, "What would you like to buy?");
+
+        if ( itemName != null && !itemName.equalsIgnoreCase("") ) {
+            boolean isFound = false;
+
+            int index = Arrays.binarySearch(shopItemNamesArray, itemName);
+            System.out.println("INDEX: "+index);
+
+            if ( !((index + "").charAt(0) == '-') ) {
+                Item item = shopItems.get(index);
+
+                if ( score >= item.getCost() ) {
+                    addToInventory(item);
+                    System.out.println("The cost was "+item.getCost()+" points.");
+                    score -= item.getCost();
+                    //JOptionPane.showMessageDialog(null, "The cost was "+item.getCost()+" points.");
+                } else {
+                    System.out.println("You don't have enough points to buy this item");
+                    JOptionPane.showMessageDialog(null, "You don't have enough points to buy this item");
+                }
+                updateScore();
+                isFound = true;
             }
-            counter++;
+
+            if (!isFound ) {
+                JOptionPane.showMessageDialog(frame, "We don't have that item in stock.", "Oops!", JOptionPane.INFORMATION_MESSAGE, null);
+            }
         }
 	}
 	
 	private static void updateErrorLog() {
 		String errorText = "";
-		for(int x = 0; x < errorLog.length; x++) {
+		for ( int x = 0; x < errorLog.length; x++) {
 			ErrorLogItem error = errorLog[x];
 			errorText += error.getErrorMessage();
 		}
@@ -669,7 +723,7 @@ public class SimpleGame {
 	
 	private static void updateTravelLog() {
 		String travelText = "";
-		for(int x = 0; x < travelLog.length; x++) {
+		for ( int x = 0; x < travelLog.length; x++) {
 			TravelLogItem logItem = travelLog[x];
 			travelText += logItem.toString()+"\n";
 		}
@@ -690,7 +744,7 @@ public class SimpleGame {
 	
 	private static void pushToErrorLog(ErrorLogItem logItem) {
 		ErrorLogItem[] updatedErrorLog = new ErrorLogItem[errorLog.length+1];
-		for(int x = 0; x < errorLog.length; x++) {
+		for ( int x = 0; x < errorLog.length; x++) {
 			updatedErrorLog[x] = errorLog[x];
 		}
 		updatedErrorLog[updatedErrorLog.length-1] = logItem;
@@ -750,19 +804,19 @@ public class SimpleGame {
 	
 	private static void triedChangingDirection(JTextField textField) {
 		 char input = textField.getText().toLowerCase().charAt(0);
-	   	 if(input == 'n') updateDirection("North");
-	   	 else if(input == 's') updateDirection("South");
-	   	 else if(input == 'e') updateDirection("East");   
-	   	 else if(input == 'w') updateDirection("West");
-	   	 else if(input == 'i') displayInventory();
-	   	 else if(input == 'h') displayHelp();
-	   	 else if(input == 'q') frame.dispose();
+	   	 if ( input == 'n' ) updateDirection("North");
+	   	 else if ( input == 's' ) updateDirection("South");
+	   	 else if ( input == 'e' ) updateDirection("East");
+	   	 else if ( input == 'w' ) updateDirection("West");
+	   	 else if ( input == 'i' ) displayInventory();
+	   	 else if ( input == 'h' ) displayHelp();
+	   	 else if ( input == 'q' ) frame.dispose();
 	   	 else warnAboutInvalidInput();
 	   	 textField.setText("");
 	}
 	
 	private static void triedSubmittingName(JTextField nameTextField) {
-		if(nameTextField.getText().length() > 0) {
+		if ( nameTextField.getText().length() > 0) {
 	       	 String updatedName = nameTextField.getText();
 	       	 updatedName = Character.toUpperCase(updatedName.charAt(0)) + updatedName.substring(1);
 	       	 declareName(updatedName, true);
@@ -780,4 +834,71 @@ public class SimpleGame {
 		moveCountLabel.setText("Move Count: "+moveCount);
 		updateAchievementRatio();
 	}
+
+    private static void showMenu() {
+        Object[] options = {"Review Walk-Through (Forward)", "Review Walk-Through (Backward)", "Reset Game"};
+        int selectedIndex = JOptionPane.showOptionDialog(frame,
+                "What would you like to do? (Selecting a walk-through will reset your game)",
+                "Menu",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[2]);
+
+        switch (selectedIndex) {
+            case 0: // Forward Walk-Through
+                if (!logQueue.isEmpty()) showWalkThrough(logQueue);
+                break;
+            case 1: // Backward Walk-Through
+                if (!logStack.isEmpty()) showWalkThrough(logStack);
+                break;
+            case 2: // Reset Game
+                showPlaySession();
+                break;
+        }
+    }
+
+    private static void showWalkThrough(Object kind) {
+        String[] logStrings = new String[0];
+        String[] updatedLogStrings = new String[0];
+
+        if ( kind.getClass() == SimpleQueue.class ) {
+            System.out.println("CLASS: "+logQueue.peek().getClass().toString());
+            while ( !logQueue.isEmpty() ) {
+                updatedLogStrings = new String[logStrings.length+ 1 ];
+                for ( int x = 0; x < logStrings.length; x++ ) updatedLogStrings[x] = logStrings[x];
+
+                TravelLogItem logItem = (TravelLogItem) logQueue.dequeue();
+                updatedLogStrings[logStrings.length] = logItem.toString();
+
+                logStrings = updatedLogStrings;
+            }
+        } else if (kind.getClass() == SimpleStack.class ) {
+            while ( !logStack.isEmpty() ) {
+                updatedLogStrings = new String[logStrings.length + 1];
+                for ( int x = 0; x < logStrings.length; x++ ) updatedLogStrings[x] = logStrings[x];
+
+                TravelLogItem logItem = (TravelLogItem) logStack.pop();
+                updatedLogStrings[logStrings.length] = logItem.toString();
+
+                logStrings = updatedLogStrings;
+            }
+        }
+
+        JOptionPane.showInputDialog(null,
+                "",
+                "Walk-Through",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                logStrings,
+                logStrings[0]);
+
+        // Reset Game
+        showPlaySession();;
+    }
+
+    private static void playPuzzleGame() {
+        PuzzleGame puzzleGame = new PuzzleGame();
+    }
 }
